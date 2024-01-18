@@ -36,5 +36,18 @@ namespace Control
 
             return true;
         }
+        public static void CreateNoTries(int tries, ref bool statCreated, ref float[,] values, int xindex, int yindex)
+        {
+            if (values[xindex, yindex] > 0)
+            {
+                statCreated = true;
+            }
+            if (tries == 0)
+            {
+                Console.WriteLine(StatsFail);
+                values[xindex, yindex] = values[xindex,yindex+1];
+                statCreated = true;
+            }
+        }
     }
 }

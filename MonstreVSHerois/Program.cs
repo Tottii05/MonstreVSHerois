@@ -1,4 +1,5 @@
-﻿using Control;
+﻿using Characters;
+using Control;
 namespace GameProject
 {
     class VicenteTomasCode
@@ -82,7 +83,7 @@ namespace GameProject
 
             /* Variables para la creación de personaje y estadísticas */
             int tries = 3, globalTries;
-            bool StatCreated = false, CharacterCreated = false, AllCharacterCreated = false;
+            bool statCreated = false, characterCreated = false, allCharacterCreated = false;
 
             /* Variables para los menús */
             int menuChoice, menuTries = 3;
@@ -109,6 +110,25 @@ namespace GameProject
             /* Variables para los turnos*/
             int battletries = 3, CharactersAlive = 4, round = 1, roundsChoice, stunRounds = 0, stunCD = 0, heavyArmorRounds = 0, heavyArmorCD = 0, MageCD = 0, DruidCD = 0;
 
+            const string RangeValues = "Para crear la stat elige un valor entre {0} y {1}";
+
+            const int MaxCharac = 4;
+            const int MaxStats = 3;
+            const string NamesInput = "Introduce los nombres de los personajes separados por comas:";
+            float[,] characters = new float[MaxCharac, MaxStats];
+
+            int[,] statValues = new int[,]
+            {
+                { ArcherHpMin, BarbarHpMin, MageHpMin, DruidHpMin },
+                { ArcherHpMax, BarbarHpMax, MageHpMax, DruidHpMax },
+                { ArcherAtkMin, BarbarAtkMin, MageAtkMin, DruidAtkMin },
+                { ArcherAtkMax, BarbarAtkMax, MageAtkMax, DruidAtkMax },
+                { ArcherDefMin, BarbarDefMin, MageDefMin, DruidDefMin },
+                { ArcherDefMax, BarbarDefMax, MageDefMax, DruidDefMax }
+            };
+
+            float stat = 0;
+
             ///////////             MENÚ INICIAL              ///////////
             do
             {
@@ -119,22 +139,41 @@ namespace GameProject
             } while (!leaveMenu);
             if (menuChoice == 1)
             {
+                Console.WriteLine(NamesInput);
+                string inputNames = Console.ReadLine();
+                string[] names = inputNames.Split(',');
                 Console.WriteLine(Difficulty);
                 difficultyChoice = Convert.ToInt32(Console.ReadLine());
-                switch (difficultyChoice)
+                for (int i = 0; i < characters.GetLength(0)-1; i++)
                 {
-                    case 0:
-                        Console.WriteLine(EasyMode);
-                        break;
-                    case 1:
-                        Console.WriteLine(HardMode);
-                        break;
-                    case 2:
-                        Console.WriteLine(CustomMode);
-                        break;
-                    case 3:
-                        Console.WriteLine(RandomMode);
-                        break;
+                    for (int j = 0; j < characters.GetLength(1)-1; j++)
+                    {
+                        switch (difficultyChoice)
+                        {
+                            case 0:
+                                Console.WriteLine(EasyMode);
+                                characters[i, j] = Create.MinStat(statValues, i, j);
+                                break;
+                            case 1:
+                                Console.WriteLine(HardMode);
+                                characters[i, j+1] = Create.MaxStat(statValues, i, j);
+                                break;
+                            case 2:
+                                Console.WriteLine(CustomMode);
+                                do
+                                {
+                                    Console.WriteLine(RangeValues, statValues[i,j], statValues[i,j+1]);
+                                    stat = Convert.ToSingle(Console.ReadLine());
+                                    characters[i,j] = Create.CustomStats(ref tries, ref statCreated, stat, statValues, i, j);
+                                    Check.CreateNoTries(tries, ref statCreated, ref characters, i , j);
+                                } while (!statCreated);
+                                break;
+                            case 3:
+                                Console.WriteLine(RandomMode);
+                                characters[i, j+2] = Create.RandStat(statValues, i, j);
+                                break;
+                        }
+                    }
                 }
             }
         }
