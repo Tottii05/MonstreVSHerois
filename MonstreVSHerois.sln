@@ -5,6 +5,8 @@ VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonstreVSHerois", "MonstreVSHerois\MonstreVSHerois.csproj", "{436466FB-036B-4F60-98BF-D707EA7F6F7E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Control", "Control\Control.csproj", "{C6847389-2EAF-4D7A-A8DF-FE13C4EDF954}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{436466FB-036B-4F60-98BF-D707EA7F6F7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{436466FB-036B-4F60-98BF-D707EA7F6F7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{436466FB-036B-4F60-98BF-D707EA7F6F7E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6847389-2EAF-4D7A-A8DF-FE13C4EDF954}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6847389-2EAF-4D7A-A8DF-FE13C4EDF954}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6847389-2EAF-4D7A-A8DF-FE13C4EDF954}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6847389-2EAF-4D7A-A8DF-FE13C4EDF954}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
