@@ -36,5 +36,15 @@ namespace Control
 
             return true;
         }
+        public static void CreateNoTries(ref int tries, ref bool statCreated, ref float stat, int MinStat)
+        {
+            if (tries == 0)
+            {
+                Console.WriteLine(StatsFail);
+                stat = MinStat;
+                tries = 3;
+                statCreated = true;
+            }
+        }
     }
 }
