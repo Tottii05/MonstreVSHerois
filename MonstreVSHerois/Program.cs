@@ -110,24 +110,8 @@ namespace GameProject
             /* Variables para los turnos*/
             int battletries = 3, CharactersAlive = 4, round = 1, roundsChoice, stunRounds = 0, stunCD = 0, heavyArmorRounds = 0, heavyArmorCD = 0, MageCD = 0, DruidCD = 0;
 
-            const string RangeValues = "Para crear la stat elige un valor entre {0} y {1}";
-
-            const int MaxCharac = 4;
-            const int MaxStats = 3;
             const string NamesInput = "Introduce los nombres de los personajes separados por comas:";
-            float[,] characters = new float[MaxCharac, MaxStats];
-
-            int[,] statValues = new int[,]
-            {
-                { ArcherHpMin, BarbarHpMin, MageHpMin, DruidHpMin },
-                { ArcherHpMax, BarbarHpMax, MageHpMax, DruidHpMax },
-                { ArcherAtkMin, BarbarAtkMin, MageAtkMin, DruidAtkMin },
-                { ArcherAtkMax, BarbarAtkMax, MageAtkMax, DruidAtkMax },
-                { ArcherDefMin, BarbarDefMin, MageDefMin, DruidDefMin },
-                { ArcherDefMax, BarbarDefMax, MageDefMax, DruidDefMax }
-            };
-
-            float stat = 0;
+            
 
             ///////////             MENÚ INICIAL              ///////////
             do
@@ -144,38 +128,195 @@ namespace GameProject
                 string[] names = inputNames.Split(',');
                 Console.WriteLine(Difficulty);
                 difficultyChoice = Convert.ToInt32(Console.ReadLine());
-                for (int i = 0; i < characters.GetLength(0)-1; i++)
+                switch (difficultyChoice)
                 {
-                    for (int j = 0; j < characters.GetLength(1)-1; j++)
-                    {
-                        switch (difficultyChoice)
+                    case 0:
+                        Console.WriteLine(EasyMode);
+                        // //
+                        ArcherHP = ArcherHpMax;
+                        ArcherAtk = ArcherAtkMax;
+                        ArcherDef = ArcherDefMax;
+                        // // 
+                        BarbarHP = BarbarHpMax;
+                        BarbarAtk = ArcherAtkMax;
+                        BarbarDef = ArcherDefMax;
+                        // //
+                        MageHP = MageHpMax;
+                        MageAtk = MageAtkMax;
+                        MageDef = MageDefMax;
+                        // //
+                        DruidHP = DruidHpMax;
+                        DruidAtk = DruidAtkMax;
+                        DruidDef = DruidDefMax;
+                        // //
+                        MonsterHP = MonsterHpMin;
+                        MonsterAtk = DruidAtkMin;
+                        MonsterDef = DruidDefMin;
+                        break;
+                    case 1:
+                        Console.WriteLine(HardMode);
+                        ArcherHP = ArcherHpMin;
+                        ArcherAtk = ArcherAtkMin;
+                        ArcherDef = ArcherDefMin;
+                        // // 
+                        BarbarHP = BarbarHpMin;
+                        BarbarAtk = ArcherAtkMin;
+                        BarbarDef = ArcherDefMin;
+                        // //
+                        MageHP = MageHpMin;
+                        MageAtk = MageAtkMin;
+                        MageDef = MageDefMin;
+                        // //
+                        DruidHP = DruidHpMin;
+                        DruidAtk = DruidAtkMin;
+                        DruidDef = DruidDefMin;
+                        // //
+                        MonsterHP = MonsterHpMax;
+                        MonsterAtk = MonsterAtkMax;
+                        MonsterDef = MonsterDefMax;
+                        break;
+                    case 2:
+                        Console.WriteLine(CustomMode);
+                        // CREACION ARQUERA //
+                        do
                         {
-                            case 0:
-                                Console.WriteLine(EasyMode);
-                                characters[i, j] = Create.MinStat(statValues, i, j);
-                                break;
-                            case 1:
-                                Console.WriteLine(HardMode);
-                                characters[i, j+1] = Create.MaxStat(statValues, i, j);
-                                break;
-                            case 2:
-                                Console.WriteLine(CustomMode);
-                                do
-                                {
-                                    Console.WriteLine(RangeValues, statValues[i,j], statValues[i,j+1]);
-                                    stat = Convert.ToSingle(Console.ReadLine());
-                                    characters[i,j] = Create.CustomStats(ref tries, ref statCreated, stat, statValues, i, j);
-                                    Check.CreateNoTries(tries, ref statCreated, ref characters, i , j);
-                                } while (!statCreated);
-                                break;
-                            case 3:
-                                Console.WriteLine(RandomMode);
-                                characters[i, j+2] = Create.RandStat(statValues, i, j);
-                                break;
-                        }
-                    }
+                            Console.WriteLine(HpStat, ArcherHpMin, ArcherHpMax);
+                            ArcherHP = Convert.ToInt32(Console.ReadLine());
+                            ArcherHP = Create.Stat(ref tries, ref statCreated, ArcherHP, ArcherHpMin, ArcherHpMax);
+                            Check.CreateNoTries(ref tries, ref statCreated, ref ArcherHP, ArcherHpMin);
+                        } while (!statCreated);
+                        do
+                        {
+                            Console.WriteLine(AtkStat, ArcherAtkMin, ArcherAtkMax);
+                            ArcherAtk = Convert.ToInt32(Console.ReadLine());
+                            ArcherAtk = Create.Stat(ref tries, ref statCreated, ArcherAtk, ArcherAtkMin, ArcherAtkMax);
+                            Check.CreateNoTries(ref tries, ref statCreated, ref ArcherAtk, ArcherAtkMin);
+                        } while (!statCreated);
+                        do
+                        {
+                            Console.WriteLine(DefStat, ArcherDefMin, ArcherDefMax);
+                            ArcherDef = Convert.ToInt32(Console.ReadLine());
+                            ArcherDef = Create.Stat(ref tries, ref statCreated, ArcherDef, ArcherDefMin, ArcherDefMax);
+                            Check.CreateNoTries(ref tries, ref statCreated, ref ArcherDef, ArcherDefMin);
+                        } while (!statCreated);
+                        // CREACION BARBARO //
+                        do
+                        {
+                            Console.WriteLine(HpStat, BarbarHpMin, BarbarHpMax);
+                            BarbarHP = Convert.ToInt32(Console.ReadLine());
+                            BarbarHP = Create.Stat(ref tries, ref statCreated, BarbarHP, BarbarHpMin, BarbarHpMax);
+                            Check.CreateNoTries(ref tries, ref statCreated, ref BarbarHP, BarbarHpMin);
+                        } while (!statCreated);
+                        do
+                        {
+                            Console.WriteLine(AtkStat, BarbarAtkMin, BarbarAtkMax);
+                            BarbarAtk = Convert.ToInt32(Console.ReadLine());
+                            BarbarAtk = Create.Stat(ref tries, ref statCreated, BarbarAtk, BarbarAtkMin, BarbarAtkMax);
+                            Check.CreateNoTries(ref tries, ref statCreated, ref BarbarAtk, BarbarAtkMin);
+                        } while (!statCreated);
+                        do
+                        {
+                            Console.WriteLine(DefStat, MageDefMin, MageDefMax);
+                            BarbarDef = Convert.ToInt32(Console.ReadLine());
+                            BarbarDef = Create.Stat(ref tries, ref statCreated, BarbarDef, BarbarDefMin, BarbarDefMax);
+                            Check.CreateNoTries(ref tries, ref statCreated, ref BarbarDef, BarbarDefMin);
+                        } while (!statCreated);
+                        // CREACION MAGA //
+                        do
+                        {
+                            Console.WriteLine(HpStat, DruidHpMin, DruidHpMax);
+                            MageHP = Convert.ToInt32(Console.ReadLine());
+                            MageHP = Create.Stat(ref tries, ref statCreated, MageHP, MageHpMin, MageHpMax);
+                            Check.CreateNoTries(ref tries, ref statCreated, ref MageHP, MageHpMin);
+                        } while (!statCreated);
+                        do
+                        {
+                            Console.WriteLine(AtkStat, MageAtkMin, MageAtkMax);
+                            MageAtk = Convert.ToInt32(Console.ReadLine());
+                            MageAtk = Create.Stat(ref tries, ref statCreated, MageAtk, MageAtkMin, MageAtkMax);
+                            Check.CreateNoTries(ref tries, ref statCreated, ref MageAtk, MageAtkMin);
+                        } while (!statCreated);
+                        do
+                        {
+                            Console.WriteLine(DefStat, MageDefMin, MageDefMax);
+                            MageDef = Convert.ToInt32(Console.ReadLine());
+                            MageDef = Create.Stat(ref tries, ref statCreated, MageDef, MageDefMin, MageDefMax);
+                            Check.CreateNoTries(ref tries, ref statCreated, ref MageDef, MageDefMin);
+                        } while (!statCreated);
+                        // CREACION DRUIDA //
+                        do
+                        {
+                            Console.WriteLine(HpStat, ArcherHpMin, ArcherHpMax);
+                            DruidHP = Convert.ToInt32(Console.ReadLine());
+                            DruidHP = Create.Stat(ref tries, ref statCreated, DruidHP, DruidHpMin, DruidHpMax);
+                            Check.CreateNoTries(ref tries, ref statCreated, ref DruidHP, DruidHpMin);
+                        } while (!statCreated);
+                        do
+                        {
+                            Console.WriteLine(AtkStat, DruidAtkMin, DruidAtkMax);
+                            DruidAtk = Convert.ToInt32(Console.ReadLine());
+                            DruidAtk = Create.Stat(ref tries, ref statCreated, DruidAtk, DruidAtkMin, DruidAtkMax);
+                            Check.CreateNoTries(ref tries, ref statCreated, ref DruidAtk, DruidAtkMin);
+                        } while (!statCreated);
+                        do
+                        {
+                            Console.WriteLine(DefStat, DruidDefMin, DruidDefMax);
+                            DruidDef = Convert.ToInt32(Console.ReadLine());
+                            DruidDef = Create.Stat(ref tries, ref statCreated, DruidDef, DruidDefMin, DruidDefMax);
+                            Check.CreateNoTries(ref tries, ref statCreated, ref DruidDef, DruidDefMin);
+                        } while (!statCreated);
+                        // CREACION MONSTRUO //
+                        do
+                        {
+                            Console.WriteLine(HpStat, ArcherHpMin, ArcherHpMax);
+                            MonsterHP = Convert.ToInt32(Console.ReadLine());
+                            MonsterHP = Create.Stat(ref tries, ref statCreated, MonsterHP, MonsterHpMin, MonsterHpMax);
+                            Check.CreateNoTries(ref tries, ref statCreated, ref MonsterHP, MonsterHpMin);
+                        } while (!statCreated);
+                        do
+                        {
+                            Console.WriteLine(AtkStat, MonsterAtkMin, MonsterAtkMax);
+                            MonsterAtk = Convert.ToInt32(Console.ReadLine());
+                            MonsterAtk = Create.Stat(ref tries, ref statCreated, MonsterAtk, MonsterAtkMin, MonsterAtkMax);
+                            Check.CreateNoTries(ref tries, ref statCreated, ref MonsterAtk, MonsterAtkMin);
+                        } while (!statCreated);
+                        do
+                        {
+                            Console.WriteLine(DefStat, MonsterDefMin, MonsterDefMax);
+                            MonsterDef = Convert.ToInt32(Console.ReadLine());
+                            MonsterDef = Create.Stat(ref tries, ref statCreated, MonsterDef, MonsterDefMin, MonsterDefMax);
+                            Check.CreateNoTries(ref tries, ref statCreated, ref MonsterDef, MonsterDefMin);
+                        } while (!statCreated);
+                        break;
+                    case 3:
+                        Console.WriteLine(RandomMode);
+                        ArcherHP = Create.RandStat(ArcherHpMin, ArcherHpMax);
+                        ArcherAtk = Create.RandStat(ArcherAtkMin, ArcherAtkMax);
+                        ArcherAtk = Create.RandStat(ArcherDefMin, ArcherDefMax);
+                        // // 
+                        BarbarHP = Create.RandStat(BarbarDefMin, BarbarDefMax);
+                        BarbarAtk = Create.RandStat(BarbarDefMin, BarbarDefMax);
+                        BarbarAtk = Create.RandStat(BarbarDefMin, BarbarDefMax);
+                        // //
+                        MageHP = Create.RandStat(MageDefMin, MageDefMax);
+                        MageAtk = Create.RandStat(MageDefMin, MageDefMax);
+                        MageAtk = Create.RandStat(MageDefMin, MageDefMax);
+                        // //
+                        MonsterHP = Create.RandStat(MonsterDefMin, MonsterDefMax);
+                        MonsterAtk = Create.RandStat(MonsterDefMin, MonsterDefMax);
+                        MonsterAtk = Create.RandStat(MonsterDefMin, MonsterDefMax);
+                        // //
+                        MonsterHP = Create.RandStat(MonsterDefMin, MonsterDefMax);
+                        MonsterAtk = Create.RandStat(MonsterDefMin, MonsterDefMax);
+                        MonsterAtk = Create.RandStat(MonsterDefMin, MonsterDefMax);
+                        break;
                 }
             }
+
+
+
+
+
         }
     }
 }

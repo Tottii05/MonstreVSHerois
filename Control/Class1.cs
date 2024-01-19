@@ -36,16 +36,13 @@ namespace Control
 
             return true;
         }
-        public static void CreateNoTries(int tries, ref bool statCreated, ref float[,] values, int xindex, int yindex)
+        public static void CreateNoTries(ref int tries, ref bool statCreated, ref float stat, int MinStat)
         {
-            if (values[xindex, yindex] > 0)
-            {
-                statCreated = true;
-            }
             if (tries == 0)
             {
                 Console.WriteLine(StatsFail);
-                values[xindex, yindex] = values[xindex,yindex+1];
+                stat = MinStat;
+                tries = 3;
                 statCreated = true;
             }
         }

@@ -7,10 +7,11 @@
         public const string StatConfirmation = "La stat ha sido creada ";
         const string Correctly = "CORRECTAMENTE";
         public const string triesIndicator = "Te quedan estos intentos para crear la stat: ";
-        public static float CustomStats(ref int tries, ref bool statCreated ,float valueStat, int[,] values, int xindex, int yindex)
+        public static float Stat(ref int tries, ref bool statCreated, float valueStat, int MinStat, int MaxStat)
         {
             statCreated = false;
-            if ((valueStat >= values[xindex,0]) && (valueStat <= values[yindex,1]))
+
+            if (valueStat >= MinStat && valueStat <= MaxStat)
             {
                 Console.ResetColor();
                 Console.Write(StatConfirmation);
@@ -18,6 +19,7 @@
                 Console.Write(Correctly);
                 Console.ResetColor();
                 Console.WriteLine();
+                statCreated = true;
                 return valueStat;
             }
             else
@@ -33,22 +35,15 @@
                 Console.ForegroundColor = ConsoleColor.Magenta;
                 Console.WriteLine(tries);
                 Console.ResetColor();
-                return valueStat = 0;
+                return 0;
             }
         }
-        public static float MinStat(int[,] values, int xindex, int yindex)
-        {
-            return values [xindex, yindex];
-        }
 
-        public static float MaxStat(int[,] values, int xindex, int yindex)
-        {
-            return values[xindex, yindex];
-        }
-        public static int RandStat(int[,] values, int xindex, int yindex)
+        
+        public static int RandStat(int minStat, int maxStat)
         {
             Random random = new Random();
-            return random.Next(values[xindex, 0], values[yindex, 1] + 1);
+            return random.Next(minStat, maxStat + 1);
         }
     }
 }
