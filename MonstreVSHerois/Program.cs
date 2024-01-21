@@ -1,5 +1,7 @@
 ﻿using Characters;
 using Control;
+using Rounds;
+using System.Threading;
 namespace GameProject
 {
     class VicenteTomasCode
@@ -8,6 +10,7 @@ namespace GameProject
         {
             /* Constantes para los menús de inicio */
             const string Menu = "Que querés hacer? | 0 - Salir  1 - Jugar |";
+            const string Bye = "Hasta pronto! :D ";
             const string Difficulty = "Elige la dificultad del juego | 0 - Fácil 1 - Difícil - 2 - Custom - 3 - Random|";
             const string EasyMode = "Has elegido la dificultad fácil, tienes las máximas stats posibles";
             const string HardMode = "Has elegido la dificultad difícil, tienes las mínimas stats posibles";
@@ -27,44 +30,36 @@ namespace GameProject
             const string CharacterFail = "Te has quedado sin intentos para crear el personaje";
             const string CharacterIntroductionM = "Estás creando al ";
             const string CharacterIntroductionF = "Estás creando a la ";
-            const string Archer = "ARQUERA ";
-            const string Barbar = "BÁRBARO ";
-            const string Mage = "MAGA ";
-            const string Druid = "DRUIDA ";
-            const string Monster = "MONSTRUO ";
+            
 
             /* Constantes para las rondas */
             const string triesAdvert = " te quedan estos intentos: ";
-            const string BattleFail = "Te quedaste sin intentos para hacer la batalla, a crearlo todo otra vez.";
+
             const string BattleStart = "Empieza la ";
             const string Battle = "BATALLA";
-            const string Rounds = "Ronda: ";
+
             const string NextRound = "Pulsa cualquier tecla para jugar la siguiente ronda:";
             const string CharacterUseM = "Estás usando al ";
             const string CharacterUseF = "Estás usando a la ";
             const string RoundsChoiceText = "| 1 - Atacar | 2 - Defenderse | 3 - Habilidad especial |";
-            const string Attack = "Ataca a ";
+
             const string MonsterAttack = "Ataca a los presentes";
-            const string Doing = "inflgiendo ";
-            const string Dmg = " de daño";
-            const string LifeText = "ahora tiene esta cantidad ";
-            const string Life = "de vida: ";
-            const string DuplicateDefense = "ahora duplica su defensa siendo ahora: ";
-            const string ArcherSpecialMove = "atonta y deja inutilizado durante 2 turnos a: ";
+
+            const string ArcherSpecialMove = "atontando y dejando inutilizado al enemigo durante 2 turnos";
             const string BarbarSpecialMove = "ahora es inmune al daño durante 3 turnos";
             const string MageSpecialMove = "triplica su daño en este turno infligiendo: ";
             const string DruidSpecialMove = "se concentra y usa su magia curativa, ";
+
             const string StunEfect = "está atontado y no puede golpear!";
             const string CDText = "La habilidad esta en enfriamiento, debes esperar esta cantidad de rondas: ";
             const string Victory = "VICTORIA! ";
             const string VictoryText = "Enorabuena has vencido al monstruo!";
             const string Defeat = "DERROTA ";
             const string DefeatText = "el montruo a derrotado a todo tu escuadrón";
-            const string DeadF = " MUERTA";
-            const string DeadM = " MUERTO";
+
 
             /* Constantes para valores de personajes */
-            const int Hundred = 100;
+
 
             // Constantes para la arquera //
             const int ArcherHpMin = 1500, ArcherHpMax = 2000, ArcherAtkMin = 180, ArcherAtkMax = 300, ArcherDefMin = 25, ArcherDefMax = 40;
@@ -86,11 +81,11 @@ namespace GameProject
             bool statCreated = false, characterCreated = false, allCharacterCreated = false;
 
             /* Variables para los menús */
-            int menuChoice, menuTries = 3;
-            int difficultyChoice;
-            bool leaveMenu = false;
+            int menuChoice, menuTries = 3, difficultyChoice; ;
+            bool leaveMenu = false, leaveNames = false;
+            string inputNames = "";
+            string[] names = new string[4];
 
-            /* Variables sobre las estadísticcas del personaje */
             // Estadísticas de la arquera //
             float ArcherHP = 0, OriginalArcherHP = 0, ArcherAtk = 0, ArcherDef = 0, OriginalArcherDef = 0;
 
@@ -105,12 +100,15 @@ namespace GameProject
 
             // Estadísticas del monstruo //
             float MonsterHP = 0, MonsterAtk = 0, MonsterDef = 0;
-            bool MonsterDead = false, CharacterDone = false;
+            bool MonsterDead = false, characterDone = false;
 
             /* Variables para los turnos*/
-            int battletries = 3, CharactersAlive = 4, round = 1, roundsChoice, stunRounds = 0, stunCD = 0, heavyArmorRounds = 0, heavyArmorCD = 0, MageCD = 0, DruidCD = 0;
+            int battletries = 3, characters = 4, round = 1, roundsChoice, stunRounds = 0, stunCD = 0, heavyArmorRounds = 0, heavyArmorCD = 0, MageCD = 0, DruidCD = 0;
+            int order = 0;
+            bool characAlive = true, specialReady = true;
+            float[] Hps = new float[5]; 
 
-            const string NamesInput = "Introduce los nombres de los personajes separados por comas:";
+            const string NamesInput = "Introduce los nombres de los personajes separados por comas, el orden es (1. arquera, 2. bárbaro, 3. maga, 4. druida)";
             
 
             ///////////             MENÚ INICIAL              ///////////
@@ -119,20 +117,28 @@ namespace GameProject
                 Console.WriteLine(Menu);
                 menuChoice = Convert.ToInt32(Console.ReadLine());
                 leaveMenu = Check.MenuChoiceInput(menuChoice, ref menuTries);
-                if (leaveMenu == false) { leaveMenu = Check.MenuNoTries(); }
+                if (menuTries == 0) { leaveMenu = Check.MenuNoTries(); }
             } while (!leaveMenu);
             if (menuChoice == 1)
             {
                 Console.WriteLine(NamesInput);
-                string inputNames = Console.ReadLine();
-                string[] names = inputNames.Split(',');
+                do
+                {
+                    inputNames = Console.ReadLine();
+                    leaveNames = Check.NamesInput(inputNames);
+                } while (!leaveNames);
+                string[] splitedNames = inputNames.Split(',');
+                for (int i = 0; i < names.Length; i++)
+                {
+                    names[i] = splitedNames[i];
+                }
                 Console.WriteLine(Difficulty);
                 difficultyChoice = Convert.ToInt32(Console.ReadLine());
                 switch (difficultyChoice)
                 {
                     case 0:
                         Console.WriteLine(EasyMode);
-                        // //
+                        // Arquera con todo al máximo //
                         ArcherHP = ArcherHpMax;
                         ArcherAtk = ArcherAtkMax;
                         ArcherDef = ArcherDefMax;
@@ -290,33 +296,134 @@ namespace GameProject
                         break;
                     case 3:
                         Console.WriteLine(RandomMode);
+                        // //
                         ArcherHP = Create.RandStat(ArcherHpMin, ArcherHpMax);
                         ArcherAtk = Create.RandStat(ArcherAtkMin, ArcherAtkMax);
-                        ArcherAtk = Create.RandStat(ArcherDefMin, ArcherDefMax);
+                        ArcherDef = Create.RandStat(ArcherDefMin, ArcherDefMax);
                         // // 
-                        BarbarHP = Create.RandStat(BarbarDefMin, BarbarDefMax);
-                        BarbarAtk = Create.RandStat(BarbarDefMin, BarbarDefMax);
-                        BarbarAtk = Create.RandStat(BarbarDefMin, BarbarDefMax);
+                        BarbarHP = Create.RandStat(BarbarHpMin, BarbarHpMax);
+                        BarbarAtk = Create.RandStat(BarbarAtkMin, BarbarAtkMax);
+                        BarbarDef = Create.RandStat(BarbarDefMin, BarbarDefMax);
                         // //
-                        MageHP = Create.RandStat(MageDefMin, MageDefMax);
-                        MageAtk = Create.RandStat(MageDefMin, MageDefMax);
-                        MageAtk = Create.RandStat(MageDefMin, MageDefMax);
+                        MageHP = Create.RandStat(MageHpMin, MageHpMax);
+                        MageAtk = Create.RandStat(MageAtkMin, MageAtkMax);
+                        MageDef = Create.RandStat(MageDefMin, MageDefMax);
                         // //
-                        MonsterHP = Create.RandStat(MonsterDefMin, MonsterDefMax);
-                        MonsterAtk = Create.RandStat(MonsterDefMin, MonsterDefMax);
-                        MonsterAtk = Create.RandStat(MonsterDefMin, MonsterDefMax);
+                        DruidHP = Create.RandStat(DruidHpMin, DruidHpMax);
+                        DruidAtk = Create.RandStat(DruidAtkMin, DruidAtkMax);
+                        DruidDef = Create.RandStat(DruidDefMin, DruidDefMax);
                         // //
-                        MonsterHP = Create.RandStat(MonsterDefMin, MonsterDefMax);
-                        MonsterAtk = Create.RandStat(MonsterDefMin, MonsterDefMax);
-                        MonsterAtk = Create.RandStat(MonsterDefMin, MonsterDefMax);
+                        MonsterHP = Create.RandStat(MonsterHpMin, MonsterHpMax);
+                        MonsterAtk = Create.RandStat(MonsterAtkMin, MonsterAtkMax);
+                        MonsterDef = Create.RandStat(MonsterDefMin, MonsterDefMax);
                         break;
                 }
+                Thread.Sleep(900);
+                Console.Clear();
+                /* Se asignan los valores de vida en una array */
+                Hps[0] = MonsterHP; Hps[1] = ArcherHP; Hps[2] = BarbarHP; Hps[3] = MageHP; Hps[4] = DruidHP;
+                /* Se guardan los valores de vida originales para controlar la cura del druida */
+                OriginalArcherHP = ArcherHP;
+                OriginalBarbarHP = BarbarHP;
+                OriginalMageHP = MageHP;
+                OriginalDruidHP = DruidHP;
+
+                /* Se asignan los valores de enfriamiento de las habilidades especiales */
+                do
+                {
+                    characterDone = false;
+                    /* Se ordena la array de vidas de manera descendente y se muestra*/
+                    Hps = Fight.DescHps(Hps);
+                    Fight.ShowHps(Hps, names);
+                    /* Se almacena el valor de la vida original en caso de que quiera curar el druida no se pase del valor original */
+                    ArcherDef = OriginalArcherDef;
+                    BarbarDef = OriginalBarbarDef;
+                    MageDef = OriginalMageDef;
+                    DruidDef = OriginalDruidDef;
+
+                    /* Restar turnos a la cantidad de turnos de enfriamiento de habilidades especiales */
+                    stunCD--;
+                    heavyArmorRounds--;
+                    heavyArmorCD--;
+                    MageCD--;
+                    DruidCD--;
+                    if (!MonsterDead && Fight.CheckCharacAlive(ArcherHP))
+                    {
+                        do
+                        {
+                            order = Fight.RandOrder(characters);
+                            Console.WriteLine("turno de: " + names[order]);
+                            Console.WriteLine(RoundsChoiceText);
+                            roundsChoice = Convert.ToInt32(Console.ReadLine());
+                            switch (order)
+                            {
+                                case 0:
+                                    switch (roundsChoice)
+                                    {
+                                        case 1:
+                                            Hps[4] = Fight.Attack(names[0], ArcherAtk, MonsterDef, MonsterHP, ref characterDone);
+                                            break;
+                                        case 2:
+                                            ArcherDef = Fight.Deffense(names[0], ArcherDef, ref characterDone);
+                                            break;
+                                        case 3:
+                                            if (stunCD > 0)
+                                            {
+                                                Console.WriteLine(CDText + stunRounds);
+                                                Console.WriteLine();
+                                            }
+                                            else
+                                            {
+                                                stunRounds = 2;
+                                                stunCD = 5;
+                                                characterDone = Fight.SpecialAttack(names[0]);
+                                                Console.WriteLine(ArcherSpecialMove);
+                                            }
+                                            break;
+                                        default:
+                                            Console.WriteLine(WrongNum);
+                                            battletries--;
+                                            Console.WriteLine(triesAdvert, battletries);
+                                            Check.FightNoTries(ref battletries, ref characterDone);
+                                            break;
+                                    }
+                                break;
+                                case 1:
+                                    switch (roundsChoice)
+                                    {
+                                        case 1:
+                                            Hps[4] = Fight.Attack(names[1], BarbarAtk, MonsterDef, MonsterHP, ref characterDone);
+                                            break;
+                                        case 2:
+                                            ArcherDef = Fight.Deffense(names[1], BarbarDef, ref characterDone);
+                                            break;
+                                        case 3:
+                                            if (stunCD > 0)
+                                            {
+                                                Console.WriteLine(CDText + stunRounds);
+                                                Console.WriteLine();
+                                            }
+                                            else
+                                            {
+                                                stunRounds = 2;
+                                                stunCD = 5;
+                                                characterDone = Fight.SpecialAttack(names[1]);
+
+                                            }
+                                            break;
+                                        default:
+                                            Console.WriteLine(WrongNum);
+                                            battletries--;
+                                            Console.WriteLine(triesAdvert, battletries);
+                                            Check.FightNoTries(ref battletries, ref characterDone);
+                                            break;
+                                    }
+                                break;
+                            }
+                        } while (!characterDone);
+                    }
+                } while (!MonsterDead || characters == 0);
             }
-
-
-
-
-
         }
     }
 }
