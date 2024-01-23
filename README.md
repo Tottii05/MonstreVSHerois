@@ -15,7 +15,7 @@ public class Check
                 Console.WriteLine(Bye);
                 return true;
             }
-            else if (menuChoice == 1)
+            else if (menuChoice == 1)                
             {
                 Console.WriteLine(Play);
                 return true;
@@ -28,6 +28,7 @@ public class Check
             }
         }
 ~~~~
+
 DOMINIO  |  CLASE  |  TIPO  | RESULTADO  | LÍMITE INF  | LÍMITE SUP      
 -------------------------------------------------------------------      
 -------- | ------  | Válida | ---------- | ----------- | ----------      
