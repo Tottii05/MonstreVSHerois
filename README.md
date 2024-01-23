@@ -1,3 +1,1 @@
-~~~~
-pinga
-~~~~
+## CLASES DE EQUIVALÉNCIA
