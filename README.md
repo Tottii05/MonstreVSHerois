@@ -29,11 +29,10 @@ public class Check
         }
 ~~~~
 
-DOMINIO  |  CLASE  |  TIPO  | RESULTADO  | LÍMITE INF  | LÍMITE SUP      
----------|---------|--------|------------|-------------|----------- 
----------|---------|--------|------------|-------------|----------- 
----------|---------|--------|------------|-------------|----------- 
----------|---------|--------|------------|-------------|----------- 
+DOMINIO      |  CLASE      |  TIPO      | RESULTADO      | LÍMITE INF      | LÍMITE SUP      
+Nanturals    |  0 - 1      | Válida     |   TRUE         |     0           |      1 
+Nanturals    |-infinito / 0| Válida     |   FALSE        | - infinito      |     -1
+Nanturals    |2 / infinito | Válida     |   FALSE        |       2         |     infinito
 
 ~~~
         public static bool MenuNoTries()
