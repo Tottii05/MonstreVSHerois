@@ -118,41 +118,42 @@ namespace GameProject
                         ArcherHP = ArcherHpMax;
                         ArcherAtk = ArcherAtkMax;
                         ArcherDef = ArcherDefMax;
-                        // // 
+                        // Bárbaro con todo al máximo// 
                         BarbarHP = BarbarHpMax;
                         BarbarAtk = ArcherAtkMax;
                         BarbarDef = ArcherDefMax;
-                        // //
+                        // Maga con todo al máximo//
                         MageHP = MageHpMax;
                         MageAtk = MageAtkMax;
                         MageDef = MageDefMax;
-                        // //
+                        // Druida con todo al máximo//
                         DruidHP = DruidHpMax;
                         DruidAtk = DruidAtkMax;
                         DruidDef = DruidDefMax;
-                        // //
+                        // Monstruo con todo al mínimo//
                         MonsterHP = MonsterHpMin;
                         MonsterAtk = DruidAtkMin;
                         MonsterDef = DruidDefMin;
                         break;
                     case 1:
                         Console.WriteLine(HardMode);
+                        // Arquera con todo al mínimo //
                         ArcherHP = ArcherHpMin;
                         ArcherAtk = ArcherAtkMin;
                         ArcherDef = ArcherDefMin;
-                        // // 
+                        // Bárbaro con todo al mínimo// 
                         BarbarHP = BarbarHpMin;
                         BarbarAtk = ArcherAtkMin;
                         BarbarDef = ArcherDefMin;
-                        // //
+                        // Maga con todo al mínimo//
                         MageHP = MageHpMin;
                         MageAtk = MageAtkMin;
                         MageDef = MageDefMin;
-                        // //
+                        // Druida con todo al mínimo//
                         DruidHP = DruidHpMin;
                         DruidAtk = DruidAtkMin;
                         DruidDef = DruidDefMin;
-                        // //
+                        // Monstruo con todo al máximo//
                         MonsterHP = MonsterHpMax;
                         MonsterAtk = MonsterAtkMax;
                         MonsterDef = MonsterDefMax;
@@ -272,23 +273,23 @@ namespace GameProject
                         break;
                     case 3:
                         Console.WriteLine(RandomMode);
-                        // //
+                        // Arquera con todo random //
                         ArcherHP = Create.RandStat(ArcherHpMin, ArcherHpMax);
                         ArcherAtk = Create.RandStat(ArcherAtkMin, ArcherAtkMax);
                         ArcherDef = Create.RandStat(ArcherDefMin, ArcherDefMax);
-                        // // 
+                        // Bárbaro con todo random// 
                         BarbarHP = Create.RandStat(BarbarHpMin, BarbarHpMax);
                         BarbarAtk = Create.RandStat(BarbarAtkMin, BarbarAtkMax);
                         BarbarDef = Create.RandStat(BarbarDefMin, BarbarDefMax);
-                        // //
+                        // Maga con todo random//
                         MageHP = Create.RandStat(MageHpMin, MageHpMax);
                         MageAtk = Create.RandStat(MageAtkMin, MageAtkMax);
                         MageDef = Create.RandStat(MageDefMin, MageDefMax);
-                        // //
+                        // Druida con todo random//
                         DruidHP = Create.RandStat(DruidHpMin, DruidHpMax);
                         DruidAtk = Create.RandStat(DruidAtkMin, DruidAtkMax);
                         DruidDef = Create.RandStat(DruidDefMin, DruidDefMax);
-                        // //
+                        // Montruo con todo random//
                         MonsterHP = Create.RandStat(MonsterHpMin, MonsterHpMax);
                         MonsterAtk = Create.RandStat(MonsterAtkMin, MonsterAtkMax);
                         MonsterDef = Create.RandStat(MonsterDefMin, MonsterDefMax);
@@ -337,6 +338,7 @@ namespace GameProject
                         switch (order)
                         {
                             case 0:
+                                // Turno de la arquera //
                                 if (Fight.CheckCharacAlive(ArcherHP))
                                 {
                                     while (!characterDone)
@@ -386,6 +388,7 @@ namespace GameProject
                                 else { Console.WriteLine(DeadSentence); }
                                 break;
                             case 1:
+                                // Turno del bárbaro //
                                 if (Fight.CheckCharacAlive(BarbarHP))
                                 {
                                     while (!characterDone)
@@ -437,6 +440,7 @@ namespace GameProject
                                 else { Console.WriteLine(DeadSentence); }
                                 break;
                             case 2:
+                                // Turno del maga //
                                 if (Fight.CheckCharacAlive(MageHP))
                                 {
                                     while (!characterDone)
@@ -487,6 +491,7 @@ namespace GameProject
                                 else { Console.WriteLine(DeadSentence); }
                                 break;
                             case 3:
+                                // Turno del druida //
                                 if (Fight.CheckCharacAlive(DruidHP))
                                 {
                                     while (!characterDone)
@@ -508,7 +513,7 @@ namespace GameProject
                                                 if (specialReady)
                                                 {
                                                     // CURACIÓN ARQUERA //
-                                                    overHeal = Check.OverHeal(OriginalArcherHP, ArcherHP, DruidHeal, names[0]);
+                                                    overHeal = Check.OverHeal(OriginalArcherHP, ArcherHP, DruidHeal);
                                                     if (overHeal)
                                                     {
                                                         ArcherHP = Fight.OverHeal(names[3], names[0], ArcherHP, OriginalArcherHP);
@@ -519,7 +524,7 @@ namespace GameProject
                                                         ArcherHP = Fight.NormalHeal(names[3], names[0], ArcherHP, DruidHeal);
                                                     }
                                                     // CURACIÓN BARBARO //
-                                                    overHeal = Check.OverHeal(OriginalBarbarHP, BarbarHP, DruidHeal, names[1]);
+                                                    overHeal = Check.OverHeal(OriginalBarbarHP, BarbarHP, DruidHeal);
                                                     if (overHeal)
                                                     {
                                                         BarbarHP = Fight.OverHeal(names[3], names[1], BarbarHP, OriginalBarbarHP);
@@ -530,7 +535,7 @@ namespace GameProject
                                                         BarbarHP = Fight.NormalHeal(names[3], names[1], BarbarHP, DruidHeal);
                                                     }
                                                     // CURACIÓN MAGA //
-                                                    overHeal = Check.OverHeal(OriginalMageHP, Hps[3], DruidHeal, names[2]);
+                                                    overHeal = Check.OverHeal(OriginalMageHP, Hps[3], DruidHeal);
                                                     if (overHeal)
                                                     {
                                                         MageHP = Fight.OverHeal(names[3], names[2], MageHP, OriginalMageHP);
@@ -541,7 +546,7 @@ namespace GameProject
                                                         MageHP = Fight.NormalHeal(names[3], names[2], MageHP, DruidHeal);
                                                     }
                                                     // CURACIÓN MAGA //
-                                                    overHeal = Check.OverHeal(OriginalDruidHP, Hps[4], DruidHeal, names[4]);
+                                                    overHeal = Check.OverHeal(OriginalDruidHP, Hps[4], DruidHeal);
                                                     if (overHeal)
                                                     {
                                                         DruidHP = Fight.OverHeal(names[3], names[4], DruidHP, OriginalDruidHP);
@@ -579,6 +584,7 @@ namespace GameProject
                             break;
                         }
                     }
+                    // Turno del monstruo //
                     characterDone = false;
                     if (Fight.CheckCharacAlive(MonsterHP))
                     {

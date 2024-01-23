@@ -98,7 +98,7 @@ namespace Control
             return true;
         }
 
-        public static bool OverHeal (float originalHp, float actualHp, int heal, string name)
+        public static bool OverHeal (float originalHp, float actualHp, int heal)
         {
             if (actualHp + heal > originalHp)
             {
