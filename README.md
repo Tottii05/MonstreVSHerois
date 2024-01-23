@@ -25,9 +25,9 @@ public static bool MenuChoiceInput(int menuChoice, ref int menuTries)
 
 DOMINIO      |  CLASE      |  TIPO      | RESULTADO      | LÍMITE INF      | LÍMITE SUP    
 |------------|-------------|------------|----------------|-----------------|------------|
-Nanturals    |  0 - 1      | Válida     |   TRUE         |     0           |      1 
-Nanturals    |-infinito / 0| Válida     |   FALSE        | - infinito      |     -1
-Nanturals    |2 / infinito | Válida     |   FALSE        |       2         |   infinito
+Nanturales   |  0 - 1      | Válida     |   TRUE         |     0           |      1 
+Nanturales   |-infinito / 0| Válida     |   FALSE        | - infinito      |     -1
+Nanturales   |2 / infinito | Válida     |   FALSE        |       2         |   infinito
 
 ~~~
 public static bool NamesInput (string names)
@@ -76,3 +76,26 @@ public static void CreateNoTries(ref int tries, ref bool statCreated, ref float 
     }
 }
 ~~~
+DOMINIO      |  CLASE      |  TIPO      | RESULTADO      | LÍMITE INF      | LÍMITE SUP    
+|------------|-------------|------------|----------------|-----------------|------------|
+Nanturales   |      0      | Válida     |   TRUE         |     0           |      0 
+Nanturales   |-infinito / 0| Válida     |   FALSE        | - infinito      |     -1
+Nanturales   |0 / infinito | Válida     |   FALSE        |       1         |   infinito
+~~~
+public static bool CDs (int cdSecs)
+{
+    const string CDText = "La habilidad esta en enfriamiento";
+
+    if (cdSecs > 0)
+    {
+        Console.WriteLine(CDText);
+        Console.WriteLine();
+        return false;
+    }
+    return true;
+}
+~~~
+DOMINIO      |  CLASE      |  TIPO      | RESULTADO      | LÍMITE INF      | LÍMITE SUP    
+|------------|-------------|------------|----------------|-----------------|------------|
+Nanturales   |infinito - 0 | Válida     |   FALSE        |        0        |   infinito 
+Nanturales   |-infinito / 1| Válida     |   TRUE         | - infinito      |     0
