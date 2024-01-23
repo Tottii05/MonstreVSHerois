@@ -268,3 +268,28 @@ DOMINIO      |         CLASE       |    TIPO    |       RESULTADO     |    LÍMI
 |------------|---------------------|------------|---------------------|-----------------|------------|
 Nanturales   |actualHp < originalHp|   Válida   |actualHp = originalHp|    -infinito    |originalHp-1
 Nanturales   |actualHp > originalHp|   Válida   |       Imposible     |    originalHp+1 |  infinito
+
+~~~
+public static bool Stunned (ref int stunRounds, ref bool CharacterDone)
+{
+    const string StunEfect = "está atontado y no puede golpear!";
+
+    if (stunRounds > 0)
+    {
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.Write(Monster);
+        Console.ResetColor();
+        Console.WriteLine(StunEfect);
+        Console.WriteLine();
+        stunRounds--;
+        CharacterDone = true;
+        return true;
+    }
+    return false;
+}
+~~~
+DOMINIO      |        CLASE      |    TIPO    |    RESULTADO   |    LÍMITE INF   | LÍMITE SUP    
+|------------|-------------------|------------|----------------|-----------------|------------|
+Nanturales   |    1 - infinito   |   Válida   |      TRUE      |        2        |   infinito
+Nanturales   |   -infinito - 0   |   Válida   |      FALSE     |    -infinito    |     -1
+
