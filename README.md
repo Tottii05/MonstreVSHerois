@@ -1,3 +1,3 @@
 ## CLASES DE EQUIVALENCIA
 
-** pene 
+** pene **
