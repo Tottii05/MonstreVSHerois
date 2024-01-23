@@ -1,5 +1,6 @@
 ## CLASES DE EQUIVALENCIA ##
 ### MÉTODOS MENÚ ### 
+--------------------------------------------------------
 ~~~~
 public static bool MenuChoiceInput(int menuChoice, ref int menuTries)
 {
@@ -101,6 +102,7 @@ Nanturales   |infinito - 0 | Válida     |   FALSE        |        0        |   
 Nanturales   |-infinito / 1| Válida     |   TRUE         | - infinito      |     0
 
 ### MÉTODOS CREAR STATS ### 
+----------------------------------------------------------------
 ~~~
 public static float Stat(ref int tries, ref bool statCreated, float valueStat, int MinStat, int MaxStat)
 {
@@ -153,6 +155,7 @@ Nanturales   |-infinito - MinStat|   Válida   |       0        |    -infinito  
 Nanturales   | infinito - MaxStat|   Válida   |       0        |    MaxStat-1    |   infinito
 
 ### MÉTODOS PELEA ###
+------------------------------------------------------------
 ~~~
 public static bool IsCritic ()
 {
