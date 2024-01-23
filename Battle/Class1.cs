@@ -18,7 +18,7 @@ namespace Rounds
             Random rnd = new Random();
             int random = rnd.Next(1, 11);
 
-            return luckyCritic == random ? true: false;
+            return luckyCritic == random;
         }
 
         public static bool IsDodged ()
@@ -27,7 +27,7 @@ namespace Rounds
             Random rnd = new Random();
             int random = rnd.Next(1, 21);
 
-            return luckyDodge == random ? true : false;
+            return luckyDodge == random;
         }
 
         public static void ShowRounds(int round)
@@ -115,11 +115,13 @@ namespace Rounds
             const string Dmg = " de daño";
             const string CriticText = "Criticooooo";
             const string DodgeText = "El enemigo esquiva tu ataque";
+            float lowerAttack = attackValue * monsterDef / Hundred;
 
             if (critic == true)
             {
-                attackValue *= 2;
                 Console.WriteLine(CriticText);
+                lowerAttack = (attackValue * monsterDef / Hundred) - attackValue;
+                return monsterHP + (lowerAttack * 2);
             }
             if (dodge == true)
             {
@@ -210,7 +212,7 @@ namespace Rounds
             return actualHp += heal;
         }
 
-        public static bool Stunned (int stunRounds, ref bool CharacterDone)
+        public static bool Stunned (ref int stunRounds, ref bool CharacterDone)
         {
             const string StunEfect = "está atontado y no puede golpear!";
 
