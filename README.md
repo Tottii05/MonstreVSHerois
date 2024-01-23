@@ -63,3 +63,16 @@ DOMINIO      |  CLASE        |  TIPO      | RESULTADO      | LÍMITE INF        
 Carácteres   |letras(4comas) |   Válida   |     TRUE       |length (12) comas (4)|  infinito         
 Carácteres   |letras(3comas) |   Válida   |     FALSE      |length (12) comas (4)|  infinito  
 Carácteres   |letras(11 long)|   Válida   |     FALSE      |length (0) comas (3) |  infinito
+
+~~~
+public static void CreateNoTries(ref int tries, ref bool statCreated, ref float stat, int MinStat)
+{
+    if (tries == 0)
+    {
+        Console.WriteLine(StatsFail);
+        stat = MinStat;
+        tries = 3;
+        statCreated = true;
+    }
+}
+~~~
