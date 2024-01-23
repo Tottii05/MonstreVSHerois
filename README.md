@@ -1,5 +1,5 @@
-## CLASES DE EQUIVALENCIA
-### MÉTODOS MENÚ
+## CLASES DE EQUIVALENCIA ##
+### MÉTODOS MENÚ ### 
 ~~~~
 public class Check
     {
