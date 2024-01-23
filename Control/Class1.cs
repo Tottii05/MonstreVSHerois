@@ -79,9 +79,32 @@ namespace Control
             if (battletries == 0)
             {
                 Console.WriteLine(BattleFail);
+                Console.WriteLine();
                 battletries = 3;
                 characterDone = true;
             }
+        }
+
+        public static bool CDs (int cdSecs)
+        {
+            const string CDText = "La habilidad esta en enfriamiento";
+
+            if (cdSecs > 0)
+            {
+                Console.WriteLine(CDText);
+                Console.WriteLine();
+                return false;
+            }
+            return true;
+        }
+
+        public static bool OverHeal (float originalHp, float actualHp, int heal, string name)
+        {
+            if (actualHp + heal > originalHp)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

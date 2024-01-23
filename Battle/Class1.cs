@@ -1,5 +1,10 @@
 ﻿
 
+using System;
+using System.Reflection.Metadata;
+using System.Text;
+using static System.Net.Mime.MediaTypeNames;
+
 namespace Rounds
 {
     public class Fight
@@ -36,19 +41,19 @@ namespace Rounds
             Console.WriteLine();
         }
 
-        public static void ShowHps (float[] Hps, string[] names)
+        public static void ShowHps (float archerHp, float barbarHp, float mageHp, float druidHp, float monsterHp, string[] names)
         {
-            for (int i = 0; i < Hps.Length - 1; i++)
-            {
-                if (i == 0)
-                {
-                    Console.WriteLine("Monstruo " + Hps[i]);
-                }
-                else
-                {
-                    Console.WriteLine(names[i] + " " + Hps[i]);
-                }
-            }
+            const string Dead = "MUERTO";
+            Console.WriteLine(Monster + monsterHp);
+            if (archerHp < 1) { Console.WriteLine(names[0] + " " + Dead); }
+            else { Console.WriteLine(names[0] + " " + archerHp); }
+            if (barbarHp < 1) { Console.WriteLine(names[1] + " " + Dead); }
+            else { Console.WriteLine(names[1] + " " + barbarHp); }
+            if (mageHp < 1) { Console.WriteLine(names[2] + " " + Dead); }
+            else { Console.WriteLine(names[2] + " " + mageHp); }
+            if (druidHp < 1) { Console.WriteLine(names[3] + " " + Dead); }
+            else { Console.WriteLine(names[3] + " " + druidHp); }
+
             Console.WriteLine();
         }
 
@@ -56,6 +61,12 @@ namespace Rounds
         {
 
             return actualHP > 0;
+        }
+
+        public static float[] FillHps(float archerHp, float barbarHp, float mageHp, float druidHp, float[] Hps)
+        {
+            Hps[0] = archerHp; Hps[1] = barbarHp; Hps[2] = mageHp; Hps[3] = druidHp;
+            return Hps;
         }
 
         public static float[] DescHps(float[] Hps)
@@ -75,18 +86,46 @@ namespace Rounds
             return Hps;
         }
 
-        public static int RandOrder (int cantCharacters)
+        public static int RandOrder(int cantCharacters)
         {
+            int lastNumber = -1;
+
+            if (lastNumber == -1)
+            {
+                lastNumber = new Random().Next(cantCharacters);
+                return lastNumber;
+            }
+
+            int randomNumber;
             Random rnd = new Random();
-            return rnd.Next (cantCharacters);
+
+            do
+            {
+                randomNumber = rnd.Next(cantCharacters);
+            } while (randomNumber == lastNumber);
+
+            lastNumber = randomNumber;
+            return randomNumber;
         }
 
-        public static float Attack(string name, float attackValue, float monsterDef, float monsterHP, ref bool characterDone)
+        public static float Attack(string name, float attackValue, float monsterDef, float monsterHP, ref bool characterDone, bool critic, bool dodge)
         {
-             const string Attacks = " ataca a ";
-             const string Doing = "inflgiendo ";
-             const string Dmg = " de daño";
+            const string Attacks = " ataca a ";
+            const string Doing = "inflgiendo ";
+            const string Dmg = " de daño";
+            const string CriticText = "Criticooooo";
+            const string DodgeText = "El enemigo esquiva tu ataque";
 
+            if (critic == true)
+            {
+                attackValue *= 2;
+                Console.WriteLine(CriticText);
+            }
+            if (dodge == true)
+            {
+                attackValue = 0;
+                Console.WriteLine(DodgeText);
+            }
             Console.ForegroundColor = ConsoleColor.Blue;
             Console.Write(name);
             Console.ResetColor();
@@ -100,7 +139,6 @@ namespace Rounds
             Console.Write(Dmg);
             Console.ResetColor();
             Console.WriteLine();
-            Console.Write(Monster);
             Console.WriteLine();
             characterDone = true;
             return monsterHP + ((attackValue * monsterDef / Hundred) - attackValue);
@@ -132,12 +170,162 @@ namespace Rounds
             Console.ResetColor();
             Console.WriteLine();
             return true;
-        } 
+        }
+
+        public static float OverHeal(string nameDruid, string nameCharac, float actualHp, float originalHp)
+        {
+            const string Heals = " cura a su compañero ";
+            const string Life = " de vida ";
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write(nameDruid);
+            Console.ResetColor();
+            Console.Write(Heals);
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write(nameCharac);
+            Console.ResetColor();
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write(" + ");
+            Console.Write(originalHp - actualHp);
+            Console.Write(Life);
+            Console.ResetColor();
+            Console.WriteLine();
+            return actualHp = originalHp;
+        }
+
+        public static float NormalHeal (string nameDruid, string nameCharac, float actualHp, int heal)
+        {
+            const string Heals = " cura a su compañero ";
+            const string Life = " de vida ";
+
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write(nameDruid);
+            Console.ResetColor();
+            Console.Write(Heals);
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write(nameCharac);
+            Console.ResetColor();
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write(Life);
+            Console.ResetColor();
+            return actualHp += heal;
+        }
+
+        public static bool Stunned (int stunRounds, ref bool CharacterDone)
+        {
+            const string StunEfect = "está atontado y no puede golpear!";
+
+            if (stunRounds > 0)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write(Monster);
+                Console.ResetColor();
+                Console.WriteLine(StunEfect);
+                Console.WriteLine();
+                stunRounds--;
+                CharacterDone = true;
+                return true;
+            }
+            return false;
+        }
+
+        public static void MonsterAttackText(string archerNm, string barbarNm, string mageNm, string druidNm, float dmg)
+        {
+            const string MonsterAttacks = "Ataca a los presentes";
+
+            Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write(Monster);
+            Console.ResetColor();
+            Console.WriteLine(MonsterAttacks);
+            Console.WriteLine();
+
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write(archerNm);
+            Console.ResetColor();
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write(" - ");
+            Console.WriteLine(dmg);
+            Console.ResetColor();
+            Console.WriteLine();
+
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write(barbarNm);
+            Console.ResetColor();
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write(" - ");
+            Console.WriteLine(dmg);
+            Console.ResetColor();
+            Console.WriteLine();
+
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write(mageNm);
+            Console.ResetColor();
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write(" - ");
+            Console.WriteLine(dmg);
+            Console.ResetColor();
+            Console.WriteLine();
+
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write(druidNm);
+            Console.ResetColor();
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write(" - ");
+            Console.WriteLine(dmg);
+            Console.ResetColor();
+            Console.WriteLine();
+        }
+        public static bool MonsterAttack(ref float archerHp, float archerDef, ref float barbarHp, float barbarDef, ref float mageHp, float mageDef, ref float druidHp, float druidDef, float dmg, ref int characters)
+        {
+            mageHp = mageHp + ((dmg * mageDef / Hundred) - dmg);
+            if (mageHp < 1)
+            {
+                characters = 3;
+            }
+            archerHp = archerHp + ((dmg * archerDef / Hundred) - dmg);
+            if (archerHp < 1)
+            {
+                characters = 2;
+            }
+            druidHp = druidHp + ((dmg * druidDef / Hundred) - dmg);
+            if (druidHp < 1)
+            {
+                characters = 1;
+            }
+            barbarHp = barbarHp + ((dmg * barbarDef / Hundred) - dmg);
+            if (barbarHp < 1)
+            {
+                characters = 0;
+            }
+            return true;
+        }
+
+        public static void ShowEnding (bool MonsterDead)
+        {
+            const string Victory = "VICTORIA! ";
+            const string VictoryText = "Enorabuena has vencido al monstruo!";
+            const string Defeat = "DERROTA ";
+            const string DefeatText = "el montruo a derrotado a todo tu escuadrón";
+
+            if (MonsterDead == true)
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.Write(Victory);
+                Console.ResetColor();
+                Console.WriteLine(VictoryText);
+                Console.WriteLine();
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write(Defeat);
+                Console.ResetColor();
+                Console.WriteLine(DefeatText);
+                Console.WriteLine();
+            }
+        }
     }
 }
-
-
-
 
 
 
