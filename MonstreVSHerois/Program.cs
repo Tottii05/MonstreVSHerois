@@ -1,5 +1,8 @@
 ﻿using Characters;
 using Control;
+using Rounds;
+using System;
+using System.Threading;
 namespace GameProject
 {
     class VicenteTomasCode
@@ -19,52 +22,20 @@ namespace GameProject
             const string AtkStat = "Introduce el valor del ataque [ {0} - {1} ]";
             const string DefStat = "Introduce el valor de la defensa [ {0} - {1} ]";
             const string WrongNum = "Has puesto un valor fuera del rango, ";
-            const string TryAgain = "prueba otra vez:";
-            const string StatConfirmation = "La stat ha sido creada ";
-            const string Correctly = "CORRECTAMENTE";
-            const string triesIndicator = "Te quedan estos intentos para crear la stat: ";
-            const string CharacterConfirmation = "El personaje ha sido creado correctamente";
-            const string CharacterFail = "Te has quedado sin intentos para crear el personaje";
-            const string CharacterIntroductionM = "Estás creando al ";
-            const string CharacterIntroductionF = "Estás creando a la ";
-            const string Archer = "ARQUERA ";
-            const string Barbar = "BÁRBARO ";
-            const string Mage = "MAGA ";
-            const string Druid = "DRUIDA ";
-            const string Monster = "MONSTRUO ";
+
 
             /* Constantes para las rondas */
-            const string triesAdvert = " te quedan estos intentos: ";
-            const string BattleFail = "Te quedaste sin intentos para hacer la batalla, a crearlo todo otra vez.";
+            const string triesAdvert = " te quedan estos intentos: {0}";
+
             const string BattleStart = "Empieza la ";
             const string Battle = "BATALLA";
-            const string Rounds = "Ronda: ";
-            const string NextRound = "Pulsa cualquier tecla para jugar la siguiente ronda:";
-            const string CharacterUseM = "Estás usando al ";
-            const string CharacterUseF = "Estás usando a la ";
+            const string Round = "RONDA: {0}";
             const string RoundsChoiceText = "| 1 - Atacar | 2 - Defenderse | 3 - Habilidad especial |";
-            const string Attack = "Ataca a ";
-            const string MonsterAttack = "Ataca a los presentes";
-            const string Doing = "inflgiendo ";
-            const string Dmg = " de daño";
-            const string LifeText = "ahora tiene esta cantidad ";
-            const string Life = "de vida: ";
-            const string DuplicateDefense = "ahora duplica su defensa siendo ahora: ";
-            const string ArcherSpecialMove = "atonta y deja inutilizado durante 2 turnos a: ";
-            const string BarbarSpecialMove = "ahora es inmune al daño durante 3 turnos";
-            const string MageSpecialMove = "triplica su daño en este turno infligiendo: ";
-            const string DruidSpecialMove = "se concentra y usa su magia curativa, ";
-            const string StunEfect = "está atontado y no puede golpear!";
-            const string CDText = "La habilidad esta en enfriamiento, debes esperar esta cantidad de rondas: ";
-            const string Victory = "VICTORIA! ";
-            const string VictoryText = "Enorabuena has vencido al monstruo!";
-            const string Defeat = "DERROTA ";
-            const string DefeatText = "el montruo a derrotado a todo tu escuadrón";
-            const string DeadF = " MUERTA";
-            const string DeadM = " MUERTO";
 
-            /* Constantes para valores de personajes */
-            const int Hundred = 100;
+            const string ArcherSpecialMove = "atontando y dejando inutilizado al enemigo durante 2 turnos";
+            const string BarbarSpecialMove = "ahora es inmune al daño durante 3 turnos";
+            const string MageSpecialMove = "{0} triplica su daño en este turno infligiendo: {1}";
+            const string DeadSentence = "El personaje no puede atacar porque está muerta";
 
             // Constantes para la arquera //
             const int ArcherHpMin = 1500, ArcherHpMax = 2000, ArcherAtkMin = 180, ArcherAtkMax = 300, ArcherDefMin = 25, ArcherDefMax = 40;
@@ -86,11 +57,11 @@ namespace GameProject
             bool statCreated = false, characterCreated = false, allCharacterCreated = false;
 
             /* Variables para los menús */
-            int menuChoice, menuTries = 3;
-            int difficultyChoice;
-            bool leaveMenu = false;
+            int menuChoice, menuTries = 3, difficultyChoice; ;
+            bool leaveMenu = false, leaveNames = false;
+            string inputNames = "";
+            string[] names = new string[4];
 
-            /* Variables sobre las estadísticcas del personaje */
             // Estadísticas de la arquera //
             float ArcherHP = 0, OriginalArcherHP = 0, ArcherAtk = 0, ArcherDef = 0, OriginalArcherDef = 0;
 
@@ -105,13 +76,16 @@ namespace GameProject
 
             // Estadísticas del monstruo //
             float MonsterHP = 0, MonsterAtk = 0, MonsterDef = 0;
-            bool MonsterDead = false, CharacterDone = false;
+            bool MonsterDead = false, characterDone = false;
 
             /* Variables para los turnos*/
-            int battletries = 3, CharactersAlive = 4, round = 1, roundsChoice, stunRounds = 0, stunCD = 0, heavyArmorRounds = 0, heavyArmorCD = 0, MageCD = 0, DruidCD = 0;
+            int battletries = 3, characters = 4, round = 1, roundsChoice, stunRounds = 0, stunCD = 0, heavyArmorRounds = 0, heavyArmorCD = 0, MageCD = 0, DruidCD = 0;
+            int order = 0;
+            bool characAlive = true, specialReady = true, overHeal = false, critic = false, dodge = false;
+            float[] Hps = new float[characters];
 
-            const string NamesInput = "Introduce los nombres de los personajes separados por comas:";
-            
+            const string NamesInput = "Introduce los nombres de los personajes separados por comas, el orden es (1. arquera, 2. bárbaro, 3. maga, 4. druida)";
+
 
             ///////////             MENÚ INICIAL              ///////////
             do
@@ -119,20 +93,28 @@ namespace GameProject
                 Console.WriteLine(Menu);
                 menuChoice = Convert.ToInt32(Console.ReadLine());
                 leaveMenu = Check.MenuChoiceInput(menuChoice, ref menuTries);
-                if (leaveMenu == false) { leaveMenu = Check.MenuNoTries(); }
+                if (menuTries == 0) { leaveMenu = Check.MenuNoTries(); }
             } while (!leaveMenu);
             if (menuChoice == 1)
             {
                 Console.WriteLine(NamesInput);
-                string inputNames = Console.ReadLine();
-                string[] names = inputNames.Split(',');
+                do
+                {
+                    inputNames = Console.ReadLine();
+                    leaveNames = Check.NamesInput(inputNames);
+                } while (!leaveNames);
+                string[] splitedNames = inputNames.Split(',');
+                for (int i = 0; i < names.Length; i++)
+                {
+                    names[i] = splitedNames[i];
+                }
                 Console.WriteLine(Difficulty);
                 difficultyChoice = Convert.ToInt32(Console.ReadLine());
                 switch (difficultyChoice)
                 {
                     case 0:
                         Console.WriteLine(EasyMode);
-                        // //
+                        // Arquera con todo al máximo //
                         ArcherHP = ArcherHpMax;
                         ArcherAtk = ArcherAtkMax;
                         ArcherDef = ArcherDefMax;
@@ -290,33 +272,327 @@ namespace GameProject
                         break;
                     case 3:
                         Console.WriteLine(RandomMode);
+                        // //
                         ArcherHP = Create.RandStat(ArcherHpMin, ArcherHpMax);
                         ArcherAtk = Create.RandStat(ArcherAtkMin, ArcherAtkMax);
-                        ArcherAtk = Create.RandStat(ArcherDefMin, ArcherDefMax);
+                        ArcherDef = Create.RandStat(ArcherDefMin, ArcherDefMax);
                         // // 
-                        BarbarHP = Create.RandStat(BarbarDefMin, BarbarDefMax);
-                        BarbarAtk = Create.RandStat(BarbarDefMin, BarbarDefMax);
-                        BarbarAtk = Create.RandStat(BarbarDefMin, BarbarDefMax);
+                        BarbarHP = Create.RandStat(BarbarHpMin, BarbarHpMax);
+                        BarbarAtk = Create.RandStat(BarbarAtkMin, BarbarAtkMax);
+                        BarbarDef = Create.RandStat(BarbarDefMin, BarbarDefMax);
                         // //
-                        MageHP = Create.RandStat(MageDefMin, MageDefMax);
-                        MageAtk = Create.RandStat(MageDefMin, MageDefMax);
-                        MageAtk = Create.RandStat(MageDefMin, MageDefMax);
+                        MageHP = Create.RandStat(MageHpMin, MageHpMax);
+                        MageAtk = Create.RandStat(MageAtkMin, MageAtkMax);
+                        MageDef = Create.RandStat(MageDefMin, MageDefMax);
                         // //
-                        MonsterHP = Create.RandStat(MonsterDefMin, MonsterDefMax);
-                        MonsterAtk = Create.RandStat(MonsterDefMin, MonsterDefMax);
-                        MonsterAtk = Create.RandStat(MonsterDefMin, MonsterDefMax);
+                        DruidHP = Create.RandStat(DruidHpMin, DruidHpMax);
+                        DruidAtk = Create.RandStat(DruidAtkMin, DruidAtkMax);
+                        DruidDef = Create.RandStat(DruidDefMin, DruidDefMax);
                         // //
-                        MonsterHP = Create.RandStat(MonsterDefMin, MonsterDefMax);
-                        MonsterAtk = Create.RandStat(MonsterDefMin, MonsterDefMax);
-                        MonsterAtk = Create.RandStat(MonsterDefMin, MonsterDefMax);
+                        MonsterHP = Create.RandStat(MonsterHpMin, MonsterHpMax);
+                        MonsterAtk = Create.RandStat(MonsterAtkMin, MonsterAtkMax);
+                        MonsterDef = Create.RandStat(MonsterDefMin, MonsterDefMax);
                         break;
                 }
+                Thread.Sleep(1200);
+                Console.Clear();
+                Console.Write(BattleStart);
+                Console.ForegroundColor = ConsoleColor.Magenta;
+                Console.WriteLine(Battle);
+                Console.ResetColor();
+                Console.WriteLine();
+                /* Se guardan los valores de vida originales para controlar la cura del druida */
+                OriginalArcherHP = ArcherHP;
+                OriginalBarbarHP = BarbarHP;
+                OriginalMageHP = MageHP;
+                OriginalDruidHP = DruidHP;
+
+                /* Se asignan los valores de enfriamiento de las habilidades especiales */
+                do
+                {
+                    /* Se crea y ordena la array de vidas de manera descendente y se muestra*/
+                    Hps = Fight.FillHps(ArcherHP, BarbarHP, MageHP, DruidHP, Hps);
+                    Hps = Fight.DescHps(Hps);
+                    /* Se almacena el valor de la vida original en caso de que quiera curar el druida no se pase del valor original */
+                    ArcherDef = OriginalArcherDef;
+                    BarbarDef = OriginalBarbarDef;
+                    MageDef = OriginalMageDef;
+                    DruidDef = OriginalDruidDef;
+
+                    /* Restar turnos a la cantidad de turnos de enfriamiento de habilidades especiales */
+                    stunCD--;
+                    heavyArmorRounds--;
+                    heavyArmorCD--;
+                    MageCD--;
+                    DruidCD--;
+                    for (int i = 0; i < characters; i++)
+                    {
+                        Fight.ShowHps(ArcherHP, BarbarHP, MageHP, DruidHP, MonsterHP, names);
+                        characterDone = false;
+                        critic = false;
+                        order = Fight.RandOrder(characters);
+                        Console.WriteLine("turno de: " + names[order]);
+                        Console.WriteLine(RoundsChoiceText);
+                        roundsChoice = Convert.ToInt32(Console.ReadLine());
+                        switch (order)
+                        {
+                            case 0:
+                                if (Fight.CheckCharacAlive(ArcherHP))
+                                {
+                                    while (!characterDone)
+                                    {
+                                        switch (roundsChoice)
+                                        {
+                                            case 1:
+                                                critic = Fight.IsCritic();
+                                                dodge = Fight.IsDodged();
+                                                MonsterHP = Fight.Attack(names[0], ArcherAtk, MonsterDef, MonsterHP, ref characterDone, critic, dodge);
+                                                if (!Fight.CheckCharacAlive(MonsterHP)) { MonsterDead = true; }
+                                                characterDone = true;
+                                                break;
+                                            case 2:
+                                                ArcherDef = Fight.Deffense(names[0], ArcherDef, ref characterDone);
+                                                characterDone = true;
+                                                break;
+                                            case 3:
+                                                specialReady = Check.CDs(stunCD);
+                                                if (specialReady)
+                                                {
+                                                    stunRounds = 2;
+                                                    stunCD = 5;
+                                                    characterDone = Fight.SpecialAttack(names[0]);
+                                                    Console.WriteLine(ArcherSpecialMove);
+                                                    Console.WriteLine();
+                                                    characterDone = true;
+                                                }
+                                                else
+                                                {
+                                                    Console.WriteLine(RoundsChoiceText);
+                                                    roundsChoice = Convert.ToInt32(Console.ReadLine());
+                                                }
+                                                break;
+                                            default:
+                                                Console.Write(WrongNum);
+                                                battletries--;
+                                                Console.WriteLine(triesAdvert, battletries);
+                                                Console.WriteLine();
+                                                Check.FightNoTries(ref battletries, ref characterDone);
+                                                Console.WriteLine(RoundsChoiceText);
+                                                roundsChoice = Convert.ToInt32(Console.ReadLine());
+                                                break;
+                                        }
+                                    }
+                                }
+                                else { Console.WriteLine(DeadSentence); }
+                                break;
+                            case 1:
+                                if (Fight.CheckCharacAlive(BarbarHP))
+                                {
+                                    while (!characterDone)
+                                    {
+                                        switch (roundsChoice)
+                                        {
+                                            case 1:
+                                                critic = Fight.IsCritic();
+                                                MonsterHP = Fight.Attack(names[1], BarbarAtk, MonsterDef, MonsterHP, ref characterDone, critic, dodge);
+                                                if (!Fight.CheckCharacAlive(MonsterHP)) { MonsterDead = true; }
+                                                characterDone = true;
+                                                break;
+                                            case 2:
+                                                BarbarDef = Fight.Deffense(names[1], BarbarDef, ref characterDone);
+                                                characterDone = true;
+                                                break;
+                                            case 3:
+                                                specialReady = Check.CDs(heavyArmorCD);
+                                                if (specialReady)
+                                                {
+                                                    heavyArmorRounds = 3;
+                                                    BarbarDef = 100;
+                                                    heavyArmorCD = 5;
+                                                    characterDone = Fight.SpecialAttack(names[1]);
+                                                    Console.WriteLine(BarbarSpecialMove);
+                                                    characterDone = true;
+                                                }
+                                                else
+                                                {
+                                                    Console.WriteLine(RoundsChoiceText);
+                                                    roundsChoice = Convert.ToInt32(Console.ReadLine());
+                                                }
+                                                break;
+                                            default:
+                                                Console.Write(WrongNum);
+                                                battletries--;
+                                                Console.WriteLine(triesAdvert, battletries);
+                                                Console.WriteLine();
+                                                Check.FightNoTries(ref battletries, ref characterDone);
+                                                if (!characterDone)
+                                                {
+                                                    Console.WriteLine(RoundsChoiceText);
+                                                    roundsChoice = Convert.ToInt32(Console.ReadLine());
+                                                }
+                                                break;
+                                        }
+                                    }
+                                }
+                                else { Console.WriteLine(DeadSentence); }
+                                break;
+                            case 2:
+                                if (Fight.CheckCharacAlive(MageHP))
+                                {
+                                    while (!characterDone)
+                                    {
+                                        switch (roundsChoice)
+                                        {
+                                            case 1:
+                                                critic = Fight.IsCritic();
+                                                MonsterHP = Fight.Attack(names[2], MageAtk, MonsterDef, MonsterHP, ref characterDone, critic, dodge);
+                                                if (!Fight.CheckCharacAlive(MonsterHP)) { MonsterDead = true; }
+                                                characterDone = true;
+                                                break;
+                                            case 2:
+                                                MageDef = Fight.Deffense(names[2], BarbarDef, ref characterDone);
+                                                break;
+                                            case 3:
+                                                specialReady = Check.CDs(MageCD);
+                                                if (specialReady)
+                                                {
+                                                    MonsterHP = MonsterHP - ((MageAtk * 3) - MonsterDef);
+                                                    MageCD = 5;
+                                                    characterDone = Fight.SpecialAttack(names[2]);
+                                                    Console.WriteLine(MageSpecialMove, names[2], MageAtk * 3);
+                                                    if (!Fight.CheckCharacAlive(MonsterHP)) { MonsterDead = true; }
+                                                    characterDone = true;
+                                                }
+                                                else
+                                                {
+                                                    Console.WriteLine(RoundsChoiceText);
+                                                    roundsChoice = Convert.ToInt32(Console.ReadLine());
+                                                }
+                                                break;
+                                            default:
+                                                Console.Write(WrongNum);
+                                                battletries--;
+                                                Console.WriteLine(triesAdvert, battletries);
+                                                Console.WriteLine();
+                                                Check.FightNoTries(ref battletries, ref characterDone);
+                                                if (!characterDone)
+                                                {
+                                                    Console.WriteLine(RoundsChoiceText);
+                                                    roundsChoice = Convert.ToInt32(Console.ReadLine());
+                                                }
+                                                break;
+                                        }
+                                    }
+                                }
+                                else { Console.WriteLine(DeadSentence); }
+                                break;
+                            case 3:
+                                if (Fight.CheckCharacAlive(DruidHP))
+                                {
+                                    while (!characterDone)
+                                    {
+                                        switch (roundsChoice)
+                                        {
+                                            case 1:
+                                                critic = Fight.IsCritic();
+                                                MonsterHP = Fight.Attack(names[3], MageAtk, MonsterDef, MonsterHP, ref characterDone, critic, dodge);
+                                                if (!Fight.CheckCharacAlive(MonsterHP)) { MonsterDead = true; }
+                                                characterDone = true;
+                                                break;
+                                            case 2:
+                                                MageDef = Fight.Deffense(names[3], BarbarDef, ref characterDone);
+                                                characterDone = true;
+                                                break;
+                                            case 3:
+                                                specialReady = Check.CDs(DruidCD);
+                                                if (specialReady)
+                                                {
+                                                    // CURACIÓN ARQUERA //
+                                                    overHeal = Check.OverHeal(OriginalArcherHP, ArcherHP, DruidHeal, names[0]);
+                                                    if (overHeal)
+                                                    {
+                                                        ArcherHP = Fight.OverHeal(names[3], names[0], ArcherHP, OriginalArcherHP);
+                                                        DruidCD = 5;
+                                                    }
+                                                    else
+                                                    {
+                                                        ArcherHP = Fight.NormalHeal(names[3], names[0], ArcherHP, DruidHeal);
+                                                    }
+                                                    // CURACIÓN BARBARO //
+                                                    overHeal = Check.OverHeal(OriginalBarbarHP, BarbarHP, DruidHeal, names[1]);
+                                                    if (overHeal)
+                                                    {
+                                                        BarbarHP = Fight.OverHeal(names[3], names[1], BarbarHP, OriginalBarbarHP);
+                                                        DruidCD = 5;
+                                                    }
+                                                    else
+                                                    {
+                                                        BarbarHP = Fight.NormalHeal(names[3], names[1], BarbarHP, DruidHeal);
+                                                    }
+                                                    // CURACIÓN MAGA //
+                                                    overHeal = Check.OverHeal(OriginalMageHP, Hps[3], DruidHeal, names[2]);
+                                                    if (overHeal)
+                                                    {
+                                                        MageHP = Fight.OverHeal(names[3], names[2], MageHP, OriginalMageHP);
+                                                        DruidCD = 5;
+                                                    }
+                                                    else
+                                                    {
+                                                        MageHP = Fight.NormalHeal(names[3], names[2], MageHP, DruidHeal);
+                                                    }
+                                                    // CURACIÓN MAGA //
+                                                    overHeal = Check.OverHeal(OriginalDruidHP, Hps[4], DruidHeal, names[4]);
+                                                    if (overHeal)
+                                                    {
+                                                        DruidHP = Fight.OverHeal(names[3], names[4], DruidHP, OriginalDruidHP);
+                                                        DruidCD = 5;
+                                                        characterDone = true;
+                                                    }
+                                                    else
+                                                    {
+                                                        DruidHP = Fight.NormalHeal(names[3], names[4], DruidHP, DruidHeal);
+                                                        characterDone = true;
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    Console.WriteLine(RoundsChoiceText);
+                                                    roundsChoice = Convert.ToInt32(Console.ReadLine());
+                                                }
+                                                break;
+                                            default:
+                                                Console.Write(WrongNum);
+                                                battletries--;
+                                                Console.WriteLine(triesAdvert, battletries);
+                                                Console.WriteLine();
+                                                Check.FightNoTries(ref battletries, ref characterDone);
+                                                if (!characterDone)
+                                                {
+                                                    Console.WriteLine(RoundsChoiceText);
+                                                    roundsChoice = Convert.ToInt32(Console.ReadLine());
+                                                }
+                                            break;
+                                        }
+                                    }
+                                }
+                                else { Console.WriteLine(DeadSentence); }
+                            break;
+                        }
+                    }
+                    characterDone = false;
+                    if (Fight.CheckCharacAlive(MonsterHP))
+                    {
+                        Fight.MonsterAttackText(names[0], names[1], names[2], names[3], MonsterAtk);
+                        Fight.MonsterAttack(ref ArcherHP, ArcherDef, ref BarbarHP, BarbarDef, ref MageHP, MageDef, ref DruidHP, DruidDef, MonsterAtk, ref characters);
+                        round++;
+                        Console.WriteLine(Round, round);
+                        Thread.Sleep(1500);
+                        Console.Clear();
+                    }
+                    else { MonsterDead = true; }  
+                } while (!MonsterDead && characters > 0);
+                Fight.ShowEnding(MonsterDead);
             }
-
-
-
-
-
         }
     }
 }

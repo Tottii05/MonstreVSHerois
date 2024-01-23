@@ -11,23 +11,49 @@ namespace Control
             const string Bye = "Hasta pronto! :D ";
             const string Play = "Perfecto, vamos a jugar!";
 
-            if (menuChoice == 0)
+            switch (menuChoice)
             {
-                Console.WriteLine(Bye);
-                return true;
-            }
-            else if (menuChoice == 1)
-            {
-                Console.WriteLine(Play);
-                return true;
-            }
-            else
-            {
-                Console.WriteLine(MenuWrongChoice, menuTries - 1);
-                menuTries--;
-                return menuTries > 0;
+                case 0:
+                    Console.WriteLine(Bye);
+                    return true;
+                case 1:
+                    Console.WriteLine(Play);
+                    return true;
+                default:
+                    Console.WriteLine(MenuWrongChoice, menuTries - 1);
+                    menuTries--;
+                    return false;
             }
         }
+
+        public static bool NamesInput (string names)
+        {
+            const string CommasWrong = "Ahi no hay 4 nombres separados por comas";
+            const string LengthWrong = "Venga hombre, ahí no caben 4 nombres";
+            const int MinLength = 12, MinCommas = 3;
+            int commas = 0;
+
+            foreach (char c in names)
+            {
+                if (c ==  ',')
+                {
+                    commas++;
+                }
+            }
+
+            if (commas < MinCommas)
+            {
+                Console.WriteLine(CommasWrong);
+                return false;
+            }
+            if (names.Length < MinLength)
+            {
+                Console.WriteLine(LengthWrong);
+                return false;
+            }
+            return true;
+        }
+
         public static bool MenuNoTries()
         {
             const string MenuOutOftries = "Te quedaste sin intentos en un menú, madre mía...";
@@ -45,6 +71,40 @@ namespace Control
                 tries = 3;
                 statCreated = true;
             }
+        }
+        public static void FightNoTries(ref int battletries, ref bool characterDone)
+        {
+            const string BattleFail = "Te quedaste sin intentos y perdiste el turno con este personaje";
+
+            if (battletries == 0)
+            {
+                Console.WriteLine(BattleFail);
+                Console.WriteLine();
+                battletries = 3;
+                characterDone = true;
+            }
+        }
+
+        public static bool CDs (int cdSecs)
+        {
+            const string CDText = "La habilidad esta en enfriamiento";
+
+            if (cdSecs > 0)
+            {
+                Console.WriteLine(CDText);
+                Console.WriteLine();
+                return false;
+            }
+            return true;
+        }
+
+        public static bool OverHeal (float originalHp, float actualHp, int heal, string name)
+        {
+            if (actualHp + heal > originalHp)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }
