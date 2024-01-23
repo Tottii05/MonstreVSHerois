@@ -168,3 +168,103 @@ DOMINIO      |        CLASE      |    TIPO    |    RESULTADO   |    LÍMITE INF 
 Nanturales   |     Min < Max     |   Válida   |     RANDOM     |     MinStat     |  MaxStat-1
 Nanturales   |-infinito - MinStat|   Válida   |       0        |    -infinito    |  MinStat
 Nanturales   | infinito - MaxStat|   Válida   |       0        |    MaxStat-1    |   infinito
+~~~
+public static bool CheckCharacAlive (float actualHP)
+{
+    return actualHP > 0;
+}
+~~~
+DOMINIO      |        CLASE      |    TIPO    |    RESULTADO   |    LÍMITE INF   | LÍMITE SUP    
+|------------|-------------------|------------|----------------|-----------------|------------|
+Nanturales   |    ifinito - 1    |   Válida   |      TRUE      |         1       |  infinito
+Nanturales   |    -infinito - 0  |   Válida   |      FALSE     |    -infinito    |      0
+~~~
+public static float Attack(string name, float attackValue, float monsterDef, float monsterHP, ref bool characterDone, bool critic, bool dodge)
+{
+    const string Attacks = " ataca a ";
+    const string Doing = "inflgiendo ";
+    const string Dmg = " de daño";
+    const string CriticText = "Criticooooo";
+    const string DodgeText = "El enemigo esquiva tu ataque";
+    float lowerAttack = attackValue * monsterDef / Hundred;
+
+    if (critic == true)
+    {
+        Console.WriteLine(CriticText);
+        lowerAttack = (attackValue * monsterDef / Hundred) - attackValue;
+        return monsterHP + (lowerAttack * 2);
+    }
+    if (dodge == true)
+    {
+        attackValue = 0;
+        Console.WriteLine(DodgeText);
+    }
+    Console.ForegroundColor = ConsoleColor.Blue;
+    Console.Write(name);
+    Console.ResetColor();
+    Console.Write(Attacks);
+    Console.ForegroundColor = ConsoleColor.Red;
+    Console.Write(Monster);
+    Console.ResetColor();
+    Console.Write(Doing);
+    Console.Write(attackValue - monsterDef);
+    Console.ForegroundColor = ConsoleColor.Red;
+    Console.Write(Dmg);
+    Console.ResetColor();
+    Console.WriteLine();
+    Console.WriteLine();
+    characterDone = true;
+    return monsterHP + ((attackValue * monsterDef / Hundred) - attackValue);
+}
+~~~
+DOMINIO      |        CLASE      |    TIPO    |    RESULTADO   |    LÍMITE INF   | LÍMITE SUP    
+|------------|-------------------|------------|----------------|-----------------|------------|
+Nanturales   |      70 - 1050    |   Válida   |    MonsterHp   |        70       |    1050
+Nanturales   |   -infinito - 70  |   Válida   |    Imposible   |    -infinito    |     69
+Nanturales   |   1050 - infinito |   Válida   |    Imposible   |       1051      |   infinito
+
+~~~
+public static float Deffense (string name, float defValue, ref bool characterDone)
+{
+    const string DuplicateDefense = " ahora duplica su defensa";
+
+    Console.ForegroundColor = ConsoleColor.Blue;
+    Console.Write(name);
+    Console.ResetColor();
+    Console.Write(DuplicateDefense);
+    Console.WriteLine();
+    characterDone = true;
+    return defValue * 2;
+}
+~~~
+DOMINIO      |        CLASE      |    TIPO    |    RESULTADO   |    LÍMITE INF   | LÍMITE SUP    
+|------------|-------------------|------------|----------------|-----------------|------------|
+Nanturales   |       25 - 45     |   Válida   |     def * 2    |        25       |     45
+Nanturales   |   -infinito - 25  |   Válida   |    Imposible   |    -infinito    |     24
+Nanturales   |    45 - infinito  |   Válida   |    Imposible   |       45        |   infinito
+
+~~~
+public static float OverHeal(string nameDruid, string nameCharac, float actualHp, float originalHp)
+{
+    const string Heals = " cura a su compañero ";
+    const string Life = " de vida ";
+    Console.ForegroundColor = ConsoleColor.Blue;
+    Console.Write(nameDruid);
+    Console.ResetColor();
+    Console.Write(Heals);
+    Console.ForegroundColor = ConsoleColor.Blue;
+    Console.Write(nameCharac);
+    Console.ResetColor();
+    Console.ForegroundColor = ConsoleColor.Green;
+    Console.Write(" + ");
+    Console.Write(originalHp - actualHp);
+    Console.Write(Life);
+    Console.ResetColor();
+    Console.WriteLine();
+    return actualHp = originalHp;
+}
+~~~
+DOMINIO      |         CLASE       |    TIPO    |       RESULTADO     |    LÍMITE INF   | LÍMITE SUP    
+|------------|---------------------|------------|---------------------|-----------------|------------|
+Nanturales   |actualHp < originalHp|   Válida   |actualHp = originalHp|    -infinito    |originalHp-1
+Nanturales   |actualHp > originalHp|   Válida   |       Imposible     |    originalHp+1 |  infinito
