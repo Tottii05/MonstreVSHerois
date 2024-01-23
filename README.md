@@ -99,3 +99,72 @@ DOMINIO      |  CLASE      |  TIPO      | RESULTADO      | LÍMITE INF      | L�
 |------------|-------------|------------|----------------|-----------------|------------|
 Nanturales   |infinito - 0 | Válida     |   FALSE        |        0        |   infinito 
 Nanturales   |-infinito / 1| Válida     |   TRUE         | - infinito      |     0
+
+### MÉTODOS CREAR STATS ### 
+~~~
+public static float Stat(ref int tries, ref bool statCreated, float valueStat, int MinStat, int MaxStat)
+{
+    statCreated = false;
+
+    if (valueStat >= MinStat && valueStat <= MaxStat)
+    {
+        Console.ResetColor();
+        Console.Write(StatConfirmation);
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.Write(Correctly);
+        Console.ResetColor();
+        Console.WriteLine();
+        statCreated = true;
+        return valueStat;
+    }
+    else
+    {
+        Console.Write(WrongNum);
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.Write(TryAgain);
+        Console.WriteLine();
+        Console.ResetColor();
+        Console.WriteLine();
+        tries--;
+        Console.Write(triesIndicator);
+        Console.ForegroundColor = ConsoleColor.Magenta;
+        Console.WriteLine(tries);
+        Console.ResetColor();
+        return 0;
+    }
+}
+~~~
+DOMINIO      |        CLASE      |    TIPO    |    RESULTADO   |    LÍMITE INF   | LÍMITE SUP    
+|------------|-------------------|------------|----------------|-----------------|------------|
+Nanturales   |MinStat - MaxStat  |   Válida   |   ValueStat    |     MinStat     |   MaxStat
+Nanturales   |-infinito - MinStat|   Válida   |       0        |    -infinito    |  MinStat
+Nanturales   | infinito - MaxStat|   Válida   |       0        |    MaxStat-1    |   infinito
+~~~
+public static int RandStat(int minStat, int maxStat)
+{
+    Random random = new Random();
+    return random.Next(minStat, maxStat + 1);
+}
+~~~
+DOMINIO      |        CLASE      |    TIPO    |    RESULTADO   |    LÍMITE INF   | LÍMITE SUP    
+|------------|-------------------|------------|----------------|-----------------|------------|
+Nanturales   |MinStat < MaxStat  |   Válida   |     RANDOM     |     MinStat     |  MaxStat-1
+Nanturales   |-infinito - MinStat|   Válida   |       0        |    -infinito    |  MinStat
+Nanturales   | infinito - MaxStat|   Válida   |       0        |    MaxStat-1    |   infinito
+
+### MÉTODOS PELEA ###
+~~~
+public static bool IsCritic ()
+{
+    int luckyCritic = 7;
+    Random rnd = new Random();
+    int random = rnd.Next(1, 11);
+
+    return luckyCritic == random;
+}
+~~~
+DOMINIO      |        CLASE      |    TIPO    |    RESULTADO   |    LÍMITE INF   | LÍMITE SUP    
+|------------|-------------------|------------|----------------|-----------------|------------|
+Nanturales   |     Min < Max     |   Válida   |     RANDOM     |     MinStat     |  MaxStat-1
+Nanturales   |-infinito - MinStat|   Válida   |       0        |    -infinito    |  MinStat
+Nanturales   | infinito - MaxStat|   Válida   |       0        |    MaxStat-1    |   infinito
