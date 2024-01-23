@@ -33,5 +33,15 @@ DOMINIO  |  CLASE  |  TIPO  | RESULTADO  | LÍMITE INF  | LÍMITE SUP
 ---------|---------|--------|------------|-------------|-----------      
 -------- | ------  | Válida | ---------- | ----------- | ----------      
 -------- | ------  | Válida | ---------- | ----------- | ----------      
--------- | ------  | Válida | ---------- | ----------- | ----------      
+-------- | ------  | Válida | ---------- | ----------- | ---------- 
 
+~~~
+        public static bool MenuNoTries()
+        {
+            const string MenuOutOftries = "Te quedaste sin intentos en un menú, madre mía...";
+
+            Console.WriteLine(MenuOutOftries);
+
+            return true;
+        }
+~~~
